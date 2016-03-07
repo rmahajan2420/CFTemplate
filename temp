@@ -1,0 +1,16 @@
+"Properties": {
+          "TemplateURL": "https://s3-ap-southeast-2.amazonaws.com/swm-cf/swm-buildEC2",
+          "Parameters": {
+            "Tier0PublicSubnetAZ2a": {
+              "Fn::GetAtt": ["SubnetsSGNACLChildStack02", "Outputs.Tier0PublicSubnetAZ2a"]
+            },
+            "Tier0PublicSubnetAZ2b": {
+              "Fn::GetAtt": ["SubnetsSGNACLChildStack02", "Outputs.Tier0PublicSubnetAZ2b"]
+            },
+            "SecurityGroupIdTier0": {
+              "Fn::GetAtt": ["SubnetsSGNACLChildStack02", "Outputs.Tier0SG"]
+            },
+            "Tier0SG": {
+              "Fn::GetAtt": ["SubnetsSGNACLChildStack02", "Outputs.Tier0SG"]
+            }
+          },

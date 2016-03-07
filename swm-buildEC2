@@ -1,0 +1,110 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Description"              : "SWM Instances",
+    "Parameters"               : {
+        "StackVersion" : {
+            "Default" : "2016-03-05  - Need to also add the route table to the nat instance",
+            "Type"    : "String",
+            "Description" : ""
+        },
+        "keyPairName" : {
+        "Default" : "myolsprod",
+        "Description" : "The name of an EC2 Key Pair to allow SSH access to the instance.",
+        "Type" : "String"
+        },
+		"WebServerPort" : {
+			"Description" : "TCP/IP port of the web server",
+			"Type" : "String",
+			"Default" : "80"
+		},
+        "EnviromentName" : {
+            "Description" : "Environment type.",
+            "Default"     : "swm-prod",
+            "Type"        : "String",
+            "AllowedValues" : [
+                "swm-staging",
+				"swm-prod"
+            ],
+            "ConstraintDescription" : "must specify : swm-staging, swm-prod"
+        },
+      
+		"BuildAMI"         : {
+            "Default" : "ami-11032472",
+            "Type"    : "String",
+            "Description" : "AMI for the Build-Box instance"
+        },
+        
+		      
+		"SecurityGroupIdTier0"  : {
+            "Default"      : "sg",
+			"Description" : "Security group For Build-Box",
+            "Type"        : "List<AWS::EC2::SecurityGroup::Id>"
+        },
+        
+		"Tier0SG"  : {
+            "Default"      : "sg",
+			"Description" : "Security group For Build-Box",
+            "Type"        : "String"
+        },
+        "Tier0PublicSubnetAZ2a" 	 : {
+            "Default" : "subnet",
+            "Type"    : "String",
+            "Description" : "Public subnet 2a"
+        }
+		
+		
+ 	},
+    "Resources"                : {
+        "Instance2JumpBoxTier0"                      : {
+            "Type" : "AWS::EC2::Instance",
+           
+            "Properties" : {
+            
+                "Tags"       : [
+                    {
+                        "Key" : "Name",
+                        "Value" : {
+                            "Fn::Join" : [
+                                "",
+                                [
+                                    "Build-Box",
+                                    {
+                                        "Ref" : "EnviromentName"
+                                    },
+                                    "VPCInstance"
+                                ]
+                            ]
+                        }
+                    }
+                ],
+                "ImageId"    : {
+                    "Ref" : "BuildAMI"
+                },
+                "KeyName"  : { 
+                    "Ref" : "keyPairName" 
+                },
+                "EbsOptimized"        : false,
+                "DisableApiTermination" : false,
+                "InstanceType"          : "ti.micro",
+                "NetworkInterfaces"     : [
+                    {
+                        "AssociatePublicIpAddress" : true,
+                
+                        "SubnetId"                 : {
+                            "Ref" : "Tier0PublicSubnetAZ2a"
+                        },
+                        "GroupSet"                 : {
+                            "Ref" : "SecurityGroupIdTier0"
+                        }
+                        
+                    }
+                ]
+                
+                
+            }           
+        }
+
+
+    } 
+
+}
